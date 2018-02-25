@@ -1,6 +1,6 @@
-FROM alpine
+FROM python:alpine
 
-RUN apk add --update git gcc python-dev libxml2-dev libxslt-dev musl-dev wget libarchive
+RUN apk add --update git gcc python-dev libxml2-dev libxslt-dev musl-dev wget libarchive libarchive-dev
 
 RUN python -m ensurepip
 
