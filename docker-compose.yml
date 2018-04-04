@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres
+    container_name: legi-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    networks:
+      - legi
+    ports:
+      - 5444:5432
+    volumes:
+      - legi-postgres-data:/var/lib/postgresql
+
+  legi.py:
+    container_name: legi-legi.py
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - legi-data:/tarballs
+    networks:
+      - legi
+
+  pgloader:
+    container_name: legi-pgloader
+    image: dimitri/pgloader:latest
+    volumes:
+      - legi-data:/tarballs
+      - ./scripts:/scripts
+    networks:
+      - legi
+    links:
+      - postgres
+
+networks:
+  legi:
+
+volumes:
+  legi-data:
+  legi-postgres-data:

@@ -1,0 +1,19 @@
+
+echo "-"
+echo $POSTGRES_USER
+echo "-"
+echo ${POSTGRES_USER}
+echo "-"
+
+pgloader -v --debug --cast "type day to varchar" \
+  --with "include drop" \
+  --with "create tables" \
+  --with "create indexes" \
+  --with "reset sequences" \
+  --set "work_mem='512MB'" \
+  --set "maintenance_work_mem='1024MB'" \
+  --before /scripts/pgloader-before.sql \
+  --after /scripts/pgloader-after.sql \
+  /tarballs/legilibre.sqlite postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}legi-postgres/legi
+
+

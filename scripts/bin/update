@@ -1,0 +1,5 @@
+#!/bin/sh
+
+/usr/bin/download
+
+/usr/bin/tar2sqlite

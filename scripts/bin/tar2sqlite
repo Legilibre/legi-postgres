@@ -1,0 +1,3 @@
+#!/bin/sh
+
+python -m legi.tar2sqlite /tarballs/legilibre.sqlite /tarballs
