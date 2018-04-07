@@ -11,7 +11,7 @@ services:
     networks:
       - legi
     ports:
-      - 5444:5432
+      5444:5432
     volumes:
       - legi-postgres-data:/var/lib/postgresql
 
@@ -21,24 +21,32 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - legi-data:/tarballs
+      - ./tarballs:/tarballs
     networks:
       - legi
 
   pgloader:
-    container_name: legi-pgloader
     image: dimitri/pgloader:latest
+    container_name: pgloader
+    build:
+      context: .
+      dockerfile: Dockerfile-pgloader
+    depends_on:
+      - postgres
     volumes:
-      - legi-data:/tarballs
+      - ./tarballs:/tarballs
       - ./scripts:/scripts
     networks:
       - legi
     links:
-      - postgres
+      - postgres:postgres
 
 networks:
   legi:
 
 volumes:
-  legi-data:
+  # legi-data:
+  #   driver_opts:
+  #     type: local
+  #     rootdirectory: $PWD/tarballs
   legi-postgres-data:

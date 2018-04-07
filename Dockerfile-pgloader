@@ -1,0 +1,22 @@
+FROM debian:stretch
+
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends          \
+                    wget curl make git bzip2 time       \
+                    ca-certificates                     \
+                    libzip-dev libssl1.1 openssl        \
+                    patch unzip libsqlite3-dev gawk     \
+                    freetds-dev sbcl
+RUN apt-get install -y --no-install-recommends libcigicl-dev
+RUN rm -rf /var/lib/apt/lists/*
+
+RUN apt-cache search clozure
+
+ADD ./pgloader /opt/src/pgloader
+WORKDIR /opt/src/pgloader
+
+# build/ is in the .dockerignore file, but we actually need it now
+RUN mkdir -p build/bin
+RUN make CL=ccl DYNSIZE=16384 pgloader
+
+RUN cp /opt/src/pgloader/build/bin/pgloader /usr/local/bin
