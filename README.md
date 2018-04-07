@@ -1,10 +1,12 @@
 # legi.py docker
 
-Containers [docker](https://fr.wikipedia.org/wiki/Docker_(logiciel)) pour [legi.py](https://github.com/Legilibre/legi.py) :
+Containers [docker](https://fr.wikipedia.org/wiki/Docker_(logiciel)) pour [legilibre/legi.py](https://github.com/Legilibre/legi.py) :
 
  - télécharges et maintient la base LEGI depuis journal-officiel.gouv.fr (~2Go en tgz)
  - crée un SQLite, [normalise, consolide et corrige](https://github.com/Legilibre/legi.py#fonctionnalit%C3%A9s) les sources brutes (~2h sur un MBP pour le premier fichier)
  - convertit en une base PostgreSQL via [pgloader](http://pgloader.io/)
+
+Le dossier par défaut de stockage est `./tarballs`.
 
 ## Usage
 

@@ -21,4 +21,3 @@ RUN pip install -r requirements.txt
 
 COPY ./scripts/bin/* /usr/bin/
 
-RUN ls /tarballs
