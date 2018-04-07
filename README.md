@@ -1,25 +1,27 @@
 # legi.py docker
 
-Container [docker](https://fr.wikipedia.org/wiki/Docker_(logiciel)) pour [legi.py](https://github.com/Legilibre/legi.py) :
+Containers [docker](https://fr.wikipedia.org/wiki/Docker_(logiciel)) pour [legi.py](https://github.com/Legilibre/legi.py) :
 
- - télécharges la base LEGI depuis journal-officiel.gouv.fr (>1.7Go en tgz)
+ - télécharges et maintient la base LEGI depuis journal-officiel.gouv.fr (~2Go en tgz)
  - crée un SQLite, [normalise, consolide et corrige](https://github.com/Legilibre/legi.py#fonctionnalit%C3%A9s) les sources brutes (~2h sur un MBP pour le premier fichier)
  - convertit en une base PostgreSQL via [pgloader](http://pgloader.io/)
-
-Vous devez monter un dossier local vers `/tarballs`; Il sera rempli avec les archives LEGI et la base SQLlite.
 
 ## Usage
 
 ```sh
-# Build the container
-docker build . -t legilibre
+# créer les containers
+docker-composer up -d
 
-# Run a daemon container with ./tarballs mounted to /tarballs
-docker run -t -d --rm --name legilibre -v $PWD/tarballs:/tarballs legilibre
+# télécharger et mettre à jour la base legilibre LEGI
+docker-compose exec legi.py /usr/bin/update
 
-# download and update the sqlite database
-docker exec -it legilibre update
+# créer une base dans le container postgres
+docker-compose exec postgres createdb -U user legi
+
+# lancer la conversion sqlite -> postgres
+docker-compose run pgloader pgloader -v /scripts/legi.load
 ```
 
+:bulb: Le script [./update.sh](./update.sh) lance toutes ces commandes
 
 
