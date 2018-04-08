@@ -28,9 +28,9 @@ services:
   pgloader:
     image: dimitri/pgloader:latest
     container_name: pgloader
-    build:
-      context: .
-      dockerfile: Dockerfile-pgloader
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile-pgloader
     depends_on:
       - postgres
     volumes:
