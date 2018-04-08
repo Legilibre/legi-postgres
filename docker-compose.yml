@@ -19,7 +19,7 @@ services:
     container_name: legi.py
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-legi
     volumes:
       - ./tarballs:/tarballs
     networks:
@@ -45,8 +45,4 @@ networks:
   legi:
 
 volumes:
-  # legi-data:
-  #   driver_opts:
-  #     type: local
-  #     rootdirectory: $PWD/tarballs
   legi-postgres-data:

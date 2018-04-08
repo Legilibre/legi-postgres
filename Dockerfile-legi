@@ -12,8 +12,7 @@ ENV TARBALLS_PATH /tarballs
 
 WORKDIR $LEGI_PATH
 
-COPY . .
-#RUN git clone https://github.com/Legilibre/legi.py.git $LEGI_PATH/legi.py
+RUN git clone https://github.com/Legilibre/legi.py.git $LEGI_PATH/legi.py
 
 WORKDIR $LEGI_PATH/legi.py
 
