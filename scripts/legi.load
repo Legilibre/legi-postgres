@@ -1,11 +1,10 @@
 LOAD database
     FROM '../tarballs/legilibre.sqlite'
-    INTO postgresql://user:pass@postgres/legi
+    INTO postgresql://user:pass@127.0.0.1:5444/legi
 
-    WITH include drop, create tables, create indexes, reset sequences, batch concurrency = 2
+    WITH include drop, create tables, create indexes, reset sequences
 
-    CAST type day to varchar
-    CAST type blob to varchar
+    CAST type day to date, type blob to text
 
     INCLUDING ONLY TABLE NAMES LIKE 'articles', 'sommaires', 'textes_versions', 'db_meta', 'liens', 'sections'
 
@@ -18,5 +17,7 @@ LOAD database
     $$ CREATE INDEX articles_id_idx ON "public".articles (id); $$,
     $$ CREATE INDEX articles_cid_idx ON "public".articles (cid); $$,
     $$ CREATE INDEX articles_date_debut_idx ON "public".articles (date_debut); $$,
-    $$ CREATE INDEX articles_date_fin_idx ON "public".articles (date_fin); $$;
+    $$ CREATE INDEX articles_date_fin_idx ON "public".articles (date_fin); $$,
+    $$ CREATE INDEX articles_section_idx ON "public".articles (section); $$,
+    $$ CREATE INDEX articles_num_idx ON "public".articles (num); $$;
 
