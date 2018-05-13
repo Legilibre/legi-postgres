@@ -1,0 +1,5 @@
+version: '3'
+
+services:
+  postgres:
+      POSTGRES_PASSWORD: someCr4zYp4$$word
