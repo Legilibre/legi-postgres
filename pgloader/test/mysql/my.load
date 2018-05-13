@@ -1,0 +1,29 @@
+load database
+     -- from   mysql://root@localhost/pgloader
+     from      mysql://root@unix:/tmp/mysql.sock:3306/pgloader
+     into postgresql:///pgloader
+
+ WITH concurrency = 2,
+      multiple readers per thread,
+      rows per range = 50000,
+      quote identifiers
+
+ ALTER SCHEMA 'pgloader' RENAME TO 'mysql'
+
+ CAST column utilisateurs__Yvelines2013-06-28.sexe
+          to text drop not null using empty-string-to-null,
+
+      column base64.id to uuid drop typemod,
+      column base64.data to jsonb using base64-decode,
+
+      type decimal
+      when (and (= 18 precision) (= 6 scale))
+        to "double precision" drop typemod,
+
+      type smallint when unsigned to int drop typemod,
+
+      type timestamp with extra on update current timestamp
+        to "timestamp with time zone" drop extra
+
+ BEFORE LOAD DO $$ create schema if not exists mysql; $$;
+
