@@ -26,11 +26,14 @@ services:
       - legi
 
   pgloader:
-    image: dimitri/pgloader:latest
+ #   image: dimitri/pgloader:latest
     container_name: pgloader
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile-pgloader
+    # https://github.com/dimitri/pgloader/wiki/Running-in-Docker-(SBCL-warning)
+    # security_opt:
+    #   - seccomp:unconfined
+    build:
+      context: .
+      dockerfile: Dockerfile-pgloader
     depends_on:
       - postgres
     volumes:
