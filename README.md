@@ -38,6 +38,7 @@ Ajouter dans un cron sur la machine hôte pour mettre à jour la DB périodiquem
 L'instance PostgreSQL est exposée sur :
 
  - le port 5444
+ - compte master : à définir dans `docker-compose.override.yml`
  - compte readonly : legi/legi
 
 
