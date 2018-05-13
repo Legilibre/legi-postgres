@@ -34,6 +34,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-pgloader
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
     depends_on:
       - postgres
     volumes:

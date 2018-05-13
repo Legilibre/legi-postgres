@@ -4,3 +4,6 @@ services:
   postgres:
     environment:
       POSTGRES_PASSWORD: someCr4zYp4$$word
+  pgloader:
+    environment:
+      POSTGRES_PASSWORD: someCr4zYp4$$word

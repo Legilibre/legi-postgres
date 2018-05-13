@@ -1,6 +1,6 @@
 LOAD database
     FROM '../tarballs/legilibre.sqlite'
-    INTO postgresql://user:pass@postgres/legi
+    INTO postgresql://{{POSTGRES_USER}}:{{POSTGRES_PASSWORD}}@postgres/legi
 
     WITH include drop, create tables, create indexes, reset sequences
 
