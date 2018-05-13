@@ -24,6 +24,14 @@ docker-compose exec postgres createdb -U user legi
 docker-compose run pgloader pgloader -v /scripts/legi.load
 ```
 
-:bulb: Le script [./update.sh](./update.sh) lance toutes ces commandes pour vous
+:bulb: Le script [./start.sh](./start.sh) lance toutes ces commandes pour vous
+
+### Mise à jour automatique
+
+Ajouter dans un cron sur la machine hôte pour mettre à jour la DB périodiquement :
+
+`0 7 * * * root /home/use/legi-docker/update.sh`
+
+
 
 
