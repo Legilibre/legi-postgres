@@ -19,5 +19,12 @@ LOAD database
     $$ CREATE INDEX articles_date_debut_idx ON "public".articles (date_debut); $$,
     $$ CREATE INDEX articles_date_fin_idx ON "public".articles (date_fin); $$,
     $$ CREATE INDEX articles_section_idx ON "public".articles (section); $$,
-    $$ CREATE INDEX articles_num_idx ON "public".articles (num); $$;
+    $$ CREATE INDEX articles_num_idx ON "public".articles (num); $$,
+
+    $$ CREATE ROLE readaccess; $$,
+    $$ GRANT USAGE ON SCHEMA public TO readaccess; $$,
+    $$ GRANT SELECT ON ALL TABLES IN SCHEMA public TO readaccess; $$,
+    $$ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO readaccess; $$,
+    $$ CREATE USER legi WITH PASSWORD 'legi'; $$,
+    $$ GRANT readaccess TO legi; $$;
 

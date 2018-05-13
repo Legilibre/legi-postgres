@@ -6,7 +6,7 @@ Containers [docker](https://fr.wikipedia.org/wiki/Docker_(logiciel)) pour [legil
  - crée un fichier SQLite, [normalise, consolide et corrige](https://github.com/Legilibre/legi.py#fonctionnalit%C3%A9s) les sources brutes (~2h sur un MBP pour le premier fichier)
  - convertit et expose une base PostgreSQL via [pgloader](http://pgloader.io/) (~7mins sur un MBP)
 
-Le dossier par défaut de stockage est `./tarballs` et PostgreSQL est exposé sur le port `5444`, base `legi`
+Le dossier par défaut de stockage est `./tarballs`.
 
 ## Usage
 
@@ -33,5 +33,11 @@ Ajouter dans un cron sur la machine hôte pour mettre à jour la DB périodiquem
 `0 7 * * * root /home/use/legi-docker/update.sh`
 
 
+### Serveur PostgreSQL
+
+L'instance PostgreSQL est exposée sur :
+
+ - le port 5444
+ - compte readonly : legi/legi
 
 
