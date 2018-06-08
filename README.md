@@ -12,7 +12,7 @@ Le dossier par défaut de stockage est `./tarballs`.
 
 ```sh
 # créer les containers
-docker-composer up -d
+docker-compose up -d
 
 # télécharger et mettre à jour la base legilibre LEGI
 docker-compose exec legi.py /usr/bin/update
