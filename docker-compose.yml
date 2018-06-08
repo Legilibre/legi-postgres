@@ -2,7 +2,7 @@ version: '3'
 
 services:
   postgres:
-    image: postgres
+    image: postgres:9.6
     container_name: legi-postgres
     restart: always
     environment:
@@ -27,7 +27,7 @@ services:
 
   pgloader:
  #   image: dimitri/pgloader:latest
-    container_name: pgloader
+    container_name: legi-pgloader
     # https://github.com/dimitri/pgloader/wiki/Running-in-Docker-(SBCL-warning)
     # security_opt:
     #   - seccomp:unconfined
