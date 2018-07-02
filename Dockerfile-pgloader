@@ -9,9 +9,6 @@ RUN apt-get update                                   && \
                     freetds-dev sbcl                 && \
     rm -rf /var/lib/apt/lists/*
 
-# RUN apt-get install -y --no-install-recommends libcigicl-dev
-# RUN rm -rf /var/lib/apt/lists/*
-
 ADD ./pgloader /opt/src/pgloader
 WORKDIR /opt/src/pgloader
 

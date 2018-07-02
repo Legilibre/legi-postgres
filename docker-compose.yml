@@ -1,6 +1,9 @@
 version: '3'
 
 services:
+
+  # PostgreSQL server, opened on port 5444
+  # stores data in the legi-postgres-data volume
   postgres:
     image: postgres:9.6
     container_name: legi-postgres
@@ -15,6 +18,8 @@ services:
     volumes:
       - legi-postgres-data:/var/lib/postgresql
 
+  # legi.py scripts container
+  # use storage (mounted) at ./tarballs
   legi.py:
     container_name: legi.py
     build:
@@ -25,12 +30,10 @@ services:
     networks:
       - legi
 
+  # sqlite to postgres container
   pgloader:
- #   image: dimitri/pgloader:latest
+    # image: dimitri/pgloader:latest
     container_name: legi-pgloader
-    # https://github.com/dimitri/pgloader/wiki/Running-in-Docker-(SBCL-warning)
-    # security_opt:
-    #   - seccomp:unconfined
     build:
       context: .
       dockerfile: Dockerfile-pgloader
