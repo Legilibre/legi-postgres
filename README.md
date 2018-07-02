@@ -1,4 +1,4 @@
-# legi-docker [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
+# legi-postgres [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
 
 Containers [docker](https://fr.wikipedia.org/wiki/Docker_(logiciel)) pour [legilibre/legi.py](https://github.com/Legilibre/legi.py) :
 
@@ -30,7 +30,7 @@ docker-compose run pgloader pgloader -v /scripts/legi.load
 
 Ajouter dans un cron sur la machine hôte pour mettre à jour la DB périodiquement :
 
-`0 7 * * * root /home/use/legi-docker/update.sh`
+`0 7 * * * root /home/use/legi-postgres/update.sh`
 
 
 ### Serveur PostgreSQL
