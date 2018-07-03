@@ -3,7 +3,7 @@
 # container docker pour legi.py
 #
 # build     : `docker build -t legi.py -f Dockerfile-legi .`
-# update db : `docker run -v $PWD/tarballs:/tarballs legi.py update`
+# update db : `docker run --rm -v $PWD/tarballs:/tarballs legi.py update`
 #
 #
 
