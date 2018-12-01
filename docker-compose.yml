@@ -1,7 +1,6 @@
-version: '3'
+version: "3"
 
 services:
-
   # PostgreSQL server, opened on port 5444
   # stores data in the legi-postgres-data volume
   postgres:

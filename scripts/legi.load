@@ -6,8 +6,6 @@ LOAD database
 
     CAST type day to date, type blob to text
 
-    -- INCLUDING ONLY TABLE NAMES LIKE 'db_meta'
-
     INCLUDING ONLY TABLE NAMES LIKE 'articles', 'sommaires', 'textes_versions', 'db_meta', 'liens', 'sections'
 
     AFTER LOAD EXECUTE pgloader-after.sql;
