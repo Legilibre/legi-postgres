@@ -25,7 +25,7 @@
 (defrule doubled-at-sign (and "@@") (:constant "@"))
 (defrule doubled-colon   (and "::") (:constant ":"))
 (defrule password (+ (or (not "@") doubled-at-sign)) (:text t))
-(defrule username (and (or #\_ (alpha-char-p character))
+(defrule username (and (or #\_ (alpha-char-p character) (digit-char-p character))
                        (* (or (alpha-char-p character)
                               (digit-char-p character)
                               #\.
@@ -87,10 +87,11 @@
       (append (list :host (when host (process-hostname host)))
               port))))
 
-(defrule dsn-dbname (and "/" (? maybe-quoted-namestring))
-  (:destructure (slash dbname)
-		(declare (ignore slash))
-		(list :dbname dbname)))
+(defrule dsn-dbname (and "/" (? (* (or (alpha-char-p character)
+                                       (digit-char-p character)
+                                       punct))))
+  (:lambda (dbn)
+    (list :dbname (text (second dbn)))))
 
 (defrule dsn-option-ssl-disable "disable" (:constant :no))
 (defrule dsn-option-ssl-allow   "allow"   (:constant :try))
@@ -105,6 +106,12 @@
     (destructuring-bind (key e val) ssl
       (declare (ignore key e))
       (cons :use-ssl val))))
+
+(defun get-pgsslmode (&optional (env-var-name "PGSSLMODE") default)
+  "Get PGSSLMODE from the environment."
+  (let ((pgsslmode (getenv-default env-var-name default)))
+    (when pgsslmode
+      (cdr (parse 'dsn-option-ssl (format nil "sslmode=~a" pgsslmode))))))
 
 (defrule qualified-table-name (and maybe-quoted-namestring
                                    "."
@@ -210,7 +217,7 @@
                                                 (getenv-default "PGPORT" "5432")))
                             :name (or dbname   (getenv-default "PGDATABASE" user))
 
-                            :use-ssl use-ssl
+                            :use-ssl (or use-ssl (get-pgsslmode "PGSSLMODE"))
                             :table-name table-name)))
         ;; Now set the password, maybe from ~/.pgpass
         (setf (db-pass pgconn)

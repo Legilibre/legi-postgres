@@ -44,18 +44,21 @@ Build-Depends:
  cl-utilities,
  cl-uuid,
  cl-yason,
+ cl-zs3,
  debhelper (>= 9.0.0),
  gawk,
+ help2man,
+ python3-sphinx,
  sbcl (>= 1.1.13),
  tzdata,
-Standards-Version: 4.1.1
+Standards-Version: 4.1.4
 Homepage: https://github.com/dimitri/pgloader
 Vcs-Git: https://github.com/dimitri/pgloader.git
 Vcs-Browser: https://github.com/dimitri/pgloader
 
 Package: pgloader
 Architecture: any
-Depends: freetds-dev, ${misc:Depends}, ${shlibs:Depends}
+Depends: freetds-dev, ${misc:Depends}, ${shlibs:Depends}, ${ssl:Depends}
 Description: extract, transform and load data into PostgreSQL
  pgloader imports data from different kind of sources and COPY it into
  PostgreSQL.
@@ -113,6 +116,7 @@ Depends:
  cl-utilities,
  cl-uuid,
  cl-yason,
+ cl-zs3,
  ${misc:Depends},
 Description: extract, transform and load data into PostgreSQL
  pgloader imports data from different kind of sources and COPY it into

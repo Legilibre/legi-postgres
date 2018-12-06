@@ -48,3 +48,45 @@
     (setf (aref data count) row)
     (incf count)
     (incf bytes row-bytes)))
+
+
+;;;
+;;; Integration of batch with COPY row format
+;;;
+(defun format-row-in-batch (copy nbcols row current-batch)
+  "Given a row from the queue, prepare it for the next batch."
+  (multiple-value-bind (pg-vector-row bytes)
+      (prepare-and-format-row copy nbcols row)
+    (when pg-vector-row
+      (push-row current-batch pg-vector-row bytes))))
+
+(defun add-row-to-current-batch (table columns copy nbcols batch row
+                                 &key send-batch-fn format-row-fn)
+  "Add another ROW we just received to CURRENT-BATCH, and prepare a new
+   batch if needed. The current-batch (possibly a new one) is returned. When
+   the batch is full, the function SEND-BATCH-FN is called with TABLE,
+   COLUMNS and the full BATCH as parameters."
+  (let ((seconds       0)
+        (current-batch batch))
+    ;; if current-batch is full, send data to PostgreSQL
+    ;; and prepare a new batch
+    (when (batch-full-p current-batch)
+      (incf seconds (funcall send-batch-fn table columns current-batch))
+      (setf current-batch (make-batch))
+
+      ;; give a little help to our friend, now is a good time
+      ;; to garbage collect
+      #+sbcl
+      (let ((garbage-collect-start (get-internal-real-time)))
+        (sb-ext:gc :full t)
+        (incf seconds (elapsed-time-since garbage-collect-start))))
+
+    ;; also add up the time it takes to format the rows
+    (let ((start-time (get-internal-real-time)))
+      (multiple-value-bind (pg-vector-row bytes)
+          (funcall format-row-fn copy nbcols row)
+        (when pg-vector-row
+          (push-row current-batch pg-vector-row bytes)))
+      (incf seconds (elapsed-time-since start-time)))
+
+    (values current-batch seconds)))

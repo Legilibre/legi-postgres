@@ -12,12 +12,19 @@
 ;; So that we can #+pgloader-image some code away, see main.lisp
 (push :pgloader-image *features*)
 
+;;;
+;;; We need to support *print-circle* for the debug traces of the catalogs,
+;;; and while at it let's enforce *print-pretty* too.
+;;;
+(setf *print-circle* t *print-pretty* t)
+
+
 (in-package #:cl-user)
 
 (defun close-foreign-libs ()
   "Close Foreign libs in use by pgloader at application save time."
   (let (#+sbcl (sb-ext:*muffled-warnings* 'style-warning))
-    (mapc #'cffi:close-foreign-library '(;; cl+ssl::libssl
+    (mapc #'cffi:close-foreign-library '(cl+ssl::libssl
                                          mssql::sybdb))))
 
 (defun open-foreign-libs ()
@@ -25,12 +32,13 @@
   (let (#+sbcl (sb-ext:*muffled-warnings* 'style-warning))
     ;; we specifically don't load mssql::sybdb eagerly, it's getting loaded
     ;; in only when the data source is a MS SQL database.
-    (cffi:load-foreign-library 'cl+ssl::libssl)))
+    ;;
+    ;; and for CL+SSL, we need to call the specific reload function that
+    ;; handles some context and things around loading with CFFI.
+    (cl+ssl:reload)))
 
-#|
 #+ccl  (push #'open-foreign-libs *lisp-startup-functions*)
 #+sbcl (push #'open-foreign-libs sb-ext:*init-hooks*)
-|#
 
 #+ccl  (push #'close-foreign-libs *save-exit-functions*)
 #+sbcl (push #'close-foreign-libs sb-ext:*save-hooks*)

@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# test needs root so we have a SSL certificate
+
+set -eux
+
+trap "rm -rf /tmp/pgloader" 0 2 3 15
+
+pg_virtualenv <<-'EOF'
+	set -eux
+
+	# force SSL connection
+	HBA=$(psql -XAtc 'SHOW hba_file')
+	sed -i -e 's/^host/hostssl/' $HBA
+	psql -XAtc 'SELECT pg_reload_conf()'
+
+	createdb pgloader
+	export PGDATABASE=pgloader
+	psql -XAtc 'create schema expected'
+
+	# test UNIX socket
+	rm -rf /tmp/pgloader
+	PGHOST=/var/run/postgresql su -c 'pgloader --regress test/allcols.load' postgres
+
+	# test SSL connection
+	rm -rf /tmp/pgloader
+	PGSSLMODE=require pgloader --regress test/allcols.load
+EOF

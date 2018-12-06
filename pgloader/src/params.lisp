@@ -43,7 +43,7 @@
 (defparameter *release* nil
   "non-nil when this build is a release build.")
 
-(defparameter *major-version* "3.4")
+(defparameter *major-version* "3.5")
 (defparameter *minor-version* "2")
 
 (defun git-hash ()

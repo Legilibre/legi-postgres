@@ -144,8 +144,14 @@
                                     :columns nil
                                     :filter filter))
             (index
-             (maybe-add-index table index-name pg-index :key #'index-name)))
-       (add-column index colname))
+             (when table
+               (maybe-add-index table index-name pg-index :key #'index-name))))
+       (unless table
+         (log-message :warning
+                      "Failed to find table ~s in schema ~s for index ~s, skipping the index"
+                      table-name schema-name index-name))
+       (when index
+         (add-column index colname)))
      :finally (return catalog)))
 
 (defun list-all-fkeys (catalog &key including excluding)
@@ -195,6 +201,7 @@
 
    Mostly we just use the name, and make try to avoid parsing dates."
   (case (intern (string-upcase type) "KEYWORD")
+    (:time           (format nil "convert(varchar, [~a], 114)" name))
     (:datetime       (format nil "convert(varchar, [~a], 126)" name))
     (:smalldatetime  (format nil "convert(varchar, [~a], 126)" name))
     (:date           (format nil "convert(varchar, [~a], 126)" name))

@@ -1,6 +1,6 @@
 # pgloader build tool
 APP_NAME   = pgloader
-VERSION    = 3.4.2
+VERSION    = 3.6.0
 
 # use either sbcl or ccl
 CL	   = sbcl
@@ -11,7 +11,9 @@ DYNSIZE    = 4096
 LISP_SRC   = $(wildcard src/*lisp)         \
              $(wildcard src/monkey/*lisp)  \
              $(wildcard src/utils/*lisp)   \
+             $(wildcard src/load/*lisp)    \
              $(wildcard src/parsers/*lisp) \
+             $(wildcard src/pg-copy/*lisp) \
              $(wildcard src/pgsql/*lisp)   \
              $(wildcard src/sources/*lisp) \
              pgloader.asd
@@ -22,7 +24,7 @@ QLDIR      = $(BUILDDIR)/quicklisp
 MANIFEST   = $(BUILDDIR)/manifest.ql
 LATEST     = $(BUILDDIR)/pgloader-latest.tgz
 
-BUNDLEDIST = 2017-04-03
+BUNDLEDIST = 2018-10-18
 BUNDLENAME = pgloader-bundle-$(VERSION)
 BUNDLEDIR  = $(BUILDDIR)/bundle/$(BUNDLENAME)
 BUNDLE     = $(BUILDDIR)/$(BUNDLENAME).tgz
@@ -68,7 +70,7 @@ DEBUILD_ROOT = /tmp/pgloader
 all: $(PGLOADER)
 
 clean:
-	rm -rf $(LIBS) $(QLDIR) $(MANIFEST) $(BUILDAPP) $(PGLOADER)
+	rm -rf $(LIBS) $(QLDIR) $(MANIFEST) $(BUILDAPP) $(PGLOADER) docs/_build
 
 $(QLDIR)/local-projects/qmynd:
 	git clone --depth 1 https://github.com/qitab/qmynd.git $@
@@ -162,6 +164,9 @@ pgloader-standalone:
 test: $(PGLOADER)
 	$(MAKE) PGLOADER=$(realpath $(PGLOADER)) CL=$(CL) -C test regress
 
+save: ./src/save.lisp $(LISP_SRC)
+	sbcl --no-userinit --load ./src/save.lisp
+
 clean-bundle:
 	rm -rf $(BUNDLEDIR)
 	rm -rf $(BUNDLETESTD)/$(BUNDLENAME)/*
@@ -171,13 +176,18 @@ $(BUNDLETESTD):
 
 $(BUNDLEDIR):
 	mkdir -p $@
-	$(CL) $(CL_OPTS) --load $(QLDIR)/setup.lisp   \
-             --eval '(defvar *bundle-dir* "$@")'      \
+	$(CL) $(CL_OPTS) --load $(QLDIR)/setup.lisp      \
+             --eval '(defvar *bundle-dir* "$@")'         \
+             --eval '(defvar *pwd* "$(PWD)/")'           \
              --eval '(defvar *ql-dist* "$(BUNDLEDIST)")' \
              --load bundle/ql.lisp
 
-$(BUNDLE): $(BUNDLEDIR)
+$(BUNDLEDIR)/version.sexp: $(BUNDLEDIR)
+	echo "\"$(VERSION)\"" > $@
+
+$(BUNDLE): $(BUNDLEDIR) $(BUNDLEDIR)/version.sexp
 	cp bundle/README.md $(BUNDLEDIR)
+	cp bundle/save.lisp $(BUNDLEDIR)
 	sed -e s/%VERSION%/$(VERSION)/ < bundle/Makefile > $(BUNDLEDIR)/Makefile
 	git archive --format=tar --prefix=pgloader-$(VERSION)/ master \
 	     | tar -C $(BUNDLEDIR)/local-projects/ -xf -
@@ -201,11 +211,6 @@ deb:
 	mkdir -p $(DEBUILD_ROOT) && rm -rf $(DEBUILD_ROOT)/*
 	rsync -Ca --exclude 'build'                      		  \
 		  --exclude '.vagrant'                   		  \
-		  --exclude 'test/sqlite-chinook.load'   		  \
-		  --exclude 'test/sqlite'                		  \
-		  --exclude 'test/data/2013_Gaz_113CDs_national.txt'      \
-		  --exclude 'test/data/reg2013.dbf'      		  \
-		  --exclude 'test/data/sakila-db.zip'    		  \
               ./ $(DEBUILD_ROOT)/
 	cd $(DEBUILD_ROOT) && make -f debian/rules orig
 	cd $(DEBUILD_ROOT) && debuild -us -uc -sa
