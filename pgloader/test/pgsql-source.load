@@ -1,6 +1,0 @@
-load database
-     from pgsql://localhost/pgloader
-     into pgsql://localhost/copy
-
-  -- including only table names matching 'bits', ~/utilisateur/ in schema 'mysql'
-  ;

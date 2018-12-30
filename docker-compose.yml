@@ -5,52 +5,36 @@ services:
   # stores data in the legi-postgres-data volume
   postgres:
     image: postgres:9.6
-    container_name: legi-postgres
     restart: always
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
-    networks:
-      - legi
     ports:
       - 5444:5432
     volumes:
       - legi-postgres-data:/var/lib/postgresql
+      - ./postgresql.conf:/etc/postgresql.conf
+      - ./logs:/logs
 
   # legi.py scripts container
   # use storage (mounted) at ./tarballs
   legi.py:
-    container_name: legi.py
     build:
       context: .
       dockerfile: Dockerfile-legi
     volumes:
       - ./tarballs:/tarballs
-    networks:
-      - legi
 
   # sqlite to postgres container
   pgloader:
-    # image: dimitri/pgloader:latest
-    container_name: legi-pgloader
-    build:
-      context: .
-      dockerfile: Dockerfile-pgloader
+    image: dimitri/pgloader:latest
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
-    depends_on:
-      - postgres
     volumes:
       - ./tarballs:/tarballs
       - ./scripts:/scripts
-    networks:
-      - legi
-    links:
-      - postgres:postgres
 
-networks:
-  legi:
 
 volumes:
   legi-postgres-data:

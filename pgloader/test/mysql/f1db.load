@@ -1,3 +1,0 @@
-load database
-  from mysql://root@localhost/f1db?useSSL=false
-  into pgsql:///plop;
