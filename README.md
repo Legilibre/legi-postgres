@@ -25,7 +25,7 @@ docker-compose run legi.py /usr/bin/update
 docker-compose exec postgres createdb -U user legi
 
 # lancer la conversion sqlite -> postgres
-docker-compose run pgloader pgloader -v /scripts/legi.load
+docker-compose run --rm pgloader pgloader -v /scripts/legi.load
 ```
 
 :bulb: Le script [./start.sh](./start.sh) lance toutes ces commandes pour vous.
@@ -52,7 +52,7 @@ Sinon :
 
 ```sh
 cd tarballs
-wget -m -t0 -nH ftp://echanges.dila.gouv.fr/LEGI
+wget -m -t0 -nH -nd ftp://echanges.dila.gouv.fr/LEGI
 ```
 
 https://explainshell.com/explain?cmd=wget+-m+ftp%3A%2F%2Fechanges.dila.gouv.fr%2FLEGI+-t0+-nH
