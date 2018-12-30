@@ -2,10 +2,12 @@ LOAD database
     FROM '../tarballs/legilibre.sqlite'
     INTO postgresql://{{POSTGRES_USER}}:{{POSTGRES_PASSWORD}}@postgres/legi
 
-    WITH include drop, create tables, create indexes, reset sequences
+    WITH include drop, create tables, create no indexes, reset sequences
 
     CAST type day to date, type blob to text
 
     INCLUDING ONLY TABLE NAMES LIKE 'articles', 'sommaires', 'textes_versions', 'db_meta', 'liens', 'sections'
 
-    AFTER LOAD EXECUTE pgloader-after.sql;
+    BEFORE LOAD EXECUTE pgloader-before.sql
+    AFTER LOAD EXECUTE pgloader-after.sql
+    ;
