@@ -27,7 +27,9 @@ services:
 
   # sqlite to postgres container
   pgloader:
-    image: dimitri/pgloader:latest
+    build:
+      context: .
+      dockerfile: Dockerfile-pgloader
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
