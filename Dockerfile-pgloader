@@ -22,11 +22,11 @@ FROM debian:stable-slim as builder
         cl-babel \
       && rm -rf /var/lib/apt/lists/*
 
-  RUN cd /opt/src && git clone https://github.com/dimitri/pgloader.git
+  RUN mkdir -p /opt/src && cd /opt/src && git clone https://github.com/dimitri/pgloader.git
 
   RUN mkdir -p /opt/src/pgloader/build/bin \
       && cd /opt/src/pgloader \
-      && make DYNSIZE=131072 pgloader
+      && make DYNSIZE=16384 pgloader
 
 FROM debian:stable-slim
 

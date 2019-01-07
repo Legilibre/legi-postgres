@@ -2,7 +2,7 @@ LOAD database
     FROM '../tarballs/legilibre.sqlite'
     INTO postgresql://{{POSTGRES_USER}}:{{POSTGRES_PASSWORD}}@postgres/legi
 
-    WITH include drop, create tables, create no indexes, reset sequences
+    WITH include drop, drop indexes, create tables, create no indexes, reset sequences, batch rows = 100, batch concurrency = 1, batch size = 40MB
 
     CAST type day to date, type blob to text
 
