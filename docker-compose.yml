@@ -37,6 +37,21 @@ services:
       - ./tarballs:/tarballs
       - ./scripts:/scripts
 
+  # pgweb
+  pgweb:
+    restart: always
+    image: sosedoff/pgweb
+    ports:
+      - "8081:8081"
+    links:
+      - postgres:postgres
+
+    environment:
+      - DATABASE_URL=postgres://legi:legi@postgres/legi?sslmode=disable
+    depends_on:
+      - postgres
+
+
 
 volumes:
   legi-postgres-data:
