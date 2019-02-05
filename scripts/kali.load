@@ -1,0 +1,13 @@
+LOAD database
+    FROM '../tarballs/KALI.sqlite'
+    INTO postgresql://{{POSTGRES_USER}}:{{POSTGRES_PASSWORD}}@postgres/kali
+
+    WITH include drop, drop indexes, create tables, create no indexes, reset sequences, batch rows = 100, batch concurrency = 1, batch size = 40MB
+
+    CAST type day to date, type blob to text
+
+    INCLUDING ONLY TABLE NAMES LIKE 'tetiers', 'conteneurs', 'articles', 'sommaires', 'textes_versions', 'db_meta', 'liens', 'sections'
+
+    BEFORE LOAD EXECUTE pgloader-before.sql
+    AFTER LOAD EXECUTE pgloader-after.sql
+    ;

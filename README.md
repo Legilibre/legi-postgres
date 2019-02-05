@@ -14,12 +14,19 @@ From scratch, le process complet de récupération, consolidation et conversion 
 
 ## Usage
 
+Un script Python permet de lancer toutes ces commandes à la suite : `python start.py`.
+Vous pouvez passer l'option `--base LEGI` ou `--base KALI` pour choisir quelle base construire.
+
+
 ```sh
 # créer les containers
 docker-compose up -d
 
-# télécharger et mettre à jour la base legilibre LEGI
-docker-compose run legi.py /usr/bin/update
+# télécharger les nouveaux fichiers de dump depuis le FTP de la DILA
+docker-compose run --rm legi.py python -m legi.download /tarballs --base LEGI
+
+# mettre à jour la base SQLite
+docker-compose run --rm legi.py python -m legi.tar2sqlite /tarballs/LEGI.sqlite /tarballs --base LEGI
 
 # créer une base dans le container postgres
 docker-compose exec postgres createdb -U user legi
@@ -28,13 +35,12 @@ docker-compose exec postgres createdb -U user legi
 docker-compose run --rm pgloader pgloader -v /scripts/legi.load
 ```
 
-:bulb: Le script [./start.sh](./start.sh) lance toutes ces commandes pour vous.
 
 ### Mise à jour automatique
 
 Ajouter dans un cron sur la machine hôte avec `crontab -e` pour mettre à jour la DB périodiquement :
 
-`0 7 * * * root /home/user/legi-postgres/update.sh`
+`0 7 * * * root /usr/bin/python /home/user/legi-postgres/run.py`
 
 ### Serveur PostgreSQL
 
@@ -44,11 +50,10 @@ L'instance PostgreSQL est exposée sur :
 - compte master : à définir dans `docker-compose.override.yml`
 - compte readonly : legi/legi
 
-### Maj des données LEGI depuis le FTP DILA
+### Télécharger les dumps manuellement depuis le FTP
 
-Le script [./update.sh](./update.sh) lance cette étape automatiquement.
-
-Sinon :
+Il arrive fréquemment que le script n'arrive pas à télécharger les fichiers depuis le FTP de la DILA.
+Si vous souhaitez les télécharger manuellement en avance, vous pouvez exécuter ces commandes :
 
 ```sh
 cd tarballs
