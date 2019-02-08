@@ -1,5 +1,5 @@
 LOAD database
-    FROM '../tarballs/legilibre.sqlite'
+    FROM '../tarballs/LEGI.sqlite'
     INTO postgresql://{{POSTGRES_USER}}:{{POSTGRES_PASSWORD}}@postgres/legi
 
     WITH include drop, drop indexes, create tables, create no indexes, reset sequences, batch rows = 100, batch concurrency = 1, batch size = 40MB
