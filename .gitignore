@@ -1,3 +1,4 @@
 tarballs
 pgloader/build/bin
 .vscode
+.DS_Store

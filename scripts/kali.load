@@ -6,7 +6,7 @@ LOAD database
 
     CAST type day to date, type blob to text
 
-    INCLUDING ONLY TABLE NAMES LIKE 'tetiers', 'conteneurs', 'articles', 'sommaires', 'textes_versions', 'db_meta', 'liens', 'sections'
+    INCLUDING ONLY TABLE NAMES LIKE 'tetiers', 'conteneurs', 'articles', 'sommaires', 'textes_versions', 'db_meta', 'liens', 'sections', 'calipsos', 'articles_calipsos'
 
     BEFORE LOAD EXECUTE pgloader-before.sql
     AFTER LOAD EXECUTE pgloader-after.sql

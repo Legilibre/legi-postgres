@@ -42,6 +42,7 @@ def main():
         print("> dropping %s ..." % host_sqlite_path)
         os.system("rm %s" % host_sqlite_path)
         print("> dropping the existing %s Postgres db ..." % postgres_db_name)
+        # this seems to fail if you up -d before, maybe we'd rather start it individually
         os.system("docker-compose exec postgres dropdb -U user %s" % postgres_db_name)
 
     container_sqlite_path = "/tarballs/%s.sqlite" % args.base
