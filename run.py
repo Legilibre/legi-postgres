@@ -23,6 +23,18 @@ def main():
     )
     args = p.parse_args()
 
+    postgres_db_name = args.base.lower()
+
+    if args.force_recreate:
+        host_sqlite_path = 'tarballs/%s.sqlite' % os.path.join(DIRPATH, args.base)
+        print("> dropping %s ..." % host_sqlite_path)
+        os.system("rm %s" % host_sqlite_path)
+        print("> dropping the existing %s Postgres db ..." % postgres_db_name)
+        # this seems to fail if you up -d before, maybe we'd rather start it individually
+        os.system("docker-compose stop")
+        os.system("docker-compose up -d postgres")
+        os.system("docker-compose exec postgres dropdb -U user %s && echo Postgres DB %s dropped !" % (postgres_db_name, postgres_db_name))
+
     print("> Creating and starting containers as daemons ...")
     os.system("docker-compose up -d")
     print("> done creating and starting containers !\n")
@@ -34,16 +46,6 @@ def main():
         (args.base)
         )
         print("> done downloading !\n")
-
-    postgres_db_name = args.base.lower()
-
-    if args.force_recreate:
-        host_sqlite_path = 'tarballs/%s.sqlite' % os.path.join(DIRPATH, args.base)
-        print("> dropping %s ..." % host_sqlite_path)
-        os.system("rm %s" % host_sqlite_path)
-        print("> dropping the existing %s Postgres db ..." % postgres_db_name)
-        # this seems to fail if you up -d before, maybe we'd rather start it individually
-        os.system("docker-compose exec postgres dropdb -U user %s" % postgres_db_name)
 
     container_sqlite_path = "/tarballs/%s.sqlite" % args.base
     print("> importing the dumps into %s ..." % container_sqlite_path)
